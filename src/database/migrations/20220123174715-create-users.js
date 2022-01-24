@@ -17,20 +17,24 @@ module.exports = {
           allowNull: false,
         },
         password: {
-          type: Sequelize.STRING,
+          type: Sequelize.STRING.BINARY,
           allowNull: false,
+          select: false,
         },
         cpf: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.BIGINT(12),
           allowNull: false,
+          select: false,
         },
         created_at: {
           type: Sequelize.DATE,
           allowNull: false,
+          select: false,
         },
         updated_at: {
           type: Sequelize.DATE,
           allowNull: false,
+          select: false,
         },
       });
     } catch (error) {
