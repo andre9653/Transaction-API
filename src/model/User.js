@@ -6,6 +6,7 @@ class User extends Model {
       name: DataTypes.STRING,
       email: DataTypes.STRING,
       cpf: DataTypes.INTEGER,
+      password: DataTypes.STRING.BINARY,
     }, {
       sequelize: connection,
     });
