@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const User = require('../model/User');
+const AuthServices = require('./AuthServices');
 
 module.exports = {
   async findAll() {
@@ -43,6 +44,7 @@ module.exports = {
     if (!valid) {
       return { status: 401, message: { Error: 'Email ou senha inválidos' } };
     }
-    return { status: 200, message: { name: result.name, email } };
+    const user = AuthServices.genToken({ name: result.name, email });
+    return { status: 200, message: { token: user } };
   },
 };
