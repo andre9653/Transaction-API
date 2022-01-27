@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
-const API_SECRET = 'AND032';
+const { SECRET } = process.env;
 
 const JWT_CONFIG = {
   expiresIn: 60,
@@ -9,11 +10,11 @@ const JWT_CONFIG = {
 
 module.exports = {
   genToken(data) {
-    return jwt.sign({ data }, API_SECRET, JWT_CONFIG);
+    return jwt.sign({ data }, SECRET, JWT_CONFIG);
   },
   verifyToken(token) {
     try {
-      const decoded = jwt.verify(token, API_SECRET);
+      const decoded = jwt.verify(token, SECRET);
       const { _id, email, role } = decoded.data;
       return { _id, email, role };
     } catch (error) {

@@ -36,15 +36,19 @@ module.exports = {
   },
 
   async login({ email, password }) {
-    const result = await User.findOne({ where: { email } });
-    if (!result) {
-      return { status: 401, message: { Error: 'Email ou senha inválidos' } };
+    try {
+      const result = await User.findOne({ where: { email } });
+      if (!result) {
+        return { status: 401, message: { Error: 'Email ou senha inválidos' } };
+      }
+      const valid = bcrypt.compareSync(password, result.password);
+      if (!valid) {
+        return { status: 401, message: { Error: 'Email ou senha inválidos' } };
+      }
+      const user = AuthServices.genToken({ name: result.name, email });
+      return { status: 200, message: { token: user } };
+    } catch (error) {
+      return { status: 500, message: { Error: 'Internal_error' } };
     }
-    const valid = bcrypt.compareSync(password, result.password);
-    if (!valid) {
-      return { status: 401, message: { Error: 'Email ou senha inválidos' } };
-    }
-    const user = AuthServices.genToken({ name: result.name, email });
-    return { status: 200, message: { token: user } };
   },
 };
