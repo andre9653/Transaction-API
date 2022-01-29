@@ -14,7 +14,7 @@ module.exports = {
           unique: true,
         },
         amount: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.DECIMAL(10, 2),
           allowNull: false,
           defaultValue: 0,
         },

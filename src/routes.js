@@ -14,5 +14,6 @@ routes.post('/login', valid.validLogin, UsersController.login);
 routes.post('/register/:user_id/amount', AccountController.store);
 
 routes.post('/payment/:user_id', Auth.validToken, AccountController.payment);
+routes.put('/deposit', valid.validDeposit, AccountController.deposit);
 
 module.exports = routes;

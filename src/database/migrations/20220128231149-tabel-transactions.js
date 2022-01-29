@@ -9,7 +9,7 @@ module.exports = {
           allowNull: false,
         },
         amount: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.DECIMAL(10, 2),
           allowNull: false,
         },
         account_payer_id: {

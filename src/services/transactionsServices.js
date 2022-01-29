@@ -6,8 +6,8 @@ const User = require('../model/User');
 
 const transactionsServices = () => {
   const payment = async (id, body) => {
-    const { amount } = body;
     try {
+      const { amount } = body;
       const sequelize = new Sequelize(config);
       if (!id || !body) {
         return { status: 401, message: 'Bad Request' };
@@ -23,7 +23,7 @@ const transactionsServices = () => {
       if (!accountUserPayment || !accountUserReceiver) {
         return { status: 404, message: 'not_found' };
       }
-      if (Number(id) === userReceiver.id) return { status: 401, message: 'Não é possível enviar um valor para a própria conta!' };
+      if (Number(id) === userReceiver.id) return { status: 401, message: 'Não é possível transferir um valor para a própria conta!' };
       if (typeof body.amount !== 'number') {
         return { status: 401, message: 'O valor a ser recebido deve ser do tipo Number' };
       }
