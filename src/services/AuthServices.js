@@ -4,7 +4,7 @@ require('dotenv').config();
 const { SECRET } = process.env;
 
 const JWT_CONFIG = {
-  expiresIn: 60,
+  expiresIn: 600000000,
   algorithm: 'HS256',
 };
 
@@ -14,9 +14,9 @@ module.exports = {
   },
   verifyToken(token) {
     try {
-      const decoded = jwt.verify(token, SECRET);
-      const { _id, email, role } = decoded.data;
-      return { _id, email, role };
+      const decoded = jwt.verify(token, SECRET, { complete: true });
+      const { id, email, role } = decoded.payload.data;
+      return { id, email, role };
     } catch (error) {
       console.log(error.message);
       return null;
