@@ -3,7 +3,8 @@ const { Model, DataTypes } = require('sequelize');
 class Account extends Model {
   static init(connection) {
     super.init({
-      account: DataTypes.INTEGER,
+      account_id: DataTypes.STRING,
+      amount: DataTypes.INTEGER,
     }, {
       sequelize: connection,
     });

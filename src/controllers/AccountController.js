@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 const AccountServices = require('../services/AccountServices');
+const { transactionsServices } = require('../services/transactionsServices');
 
 module.exports = {
   async store(req, res) {
@@ -9,8 +10,8 @@ module.exports = {
     return res.status(status).json({ message });
   },
   async payment(req, res) {
-    const { id } = req.params;
-    const { status, message } = await AccountServices.payment(id, req.body);
+    const { user_id } = req.params;
+    const { status, message } = await transactionsServices().payment(user_id, req.body);
     return res.status(status).json({ message });
   },
 };
