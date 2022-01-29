@@ -8,31 +8,26 @@ module.exports = {
           autoIncrement: true,
           allowNull: false,
         },
-        date: {
-          type: Sequelize.DATE,
-          allowNull: false,
-        },
-        value: {
+        amount: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          defaultValue: 0,
         },
-        user_id_payment: {
-          type: Sequelize.INTEGER,
+        account_payer_id: {
+          type: Sequelize.STRING,
           allowNull: false,
           references: {
-            model: 'users',
-            key: 'id',
+            model: 'accounts',
+            key: 'account_id',
           },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
         },
-        user_id_receiver: {
-          type: Sequelize.INTEGER,
+        account_receiver_id: {
+          type: Sequelize.STRING,
           allowNull: false,
           references: {
-            model: 'users',
-            key: 'id',
+            model: 'accounts',
+            key: 'account_id',
           },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',

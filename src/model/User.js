@@ -5,8 +5,8 @@ class User extends Model {
     super.init({
       name: DataTypes.STRING,
       email: DataTypes.STRING,
-      cpf: DataTypes.INTEGER,
-      password: DataTypes.STRING.BINARY,
+      cpf: DataTypes.STRING,
+      password: DataTypes.STRING,
     }, {
       sequelize: connection,
     });

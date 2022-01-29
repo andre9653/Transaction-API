@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 const Sequelize = require('sequelize');
-const Amount = require('../model/Amount');
+const Amount = require('../model/Account');
 const User = require('../model/User');
 const config = require('../config/database');
 

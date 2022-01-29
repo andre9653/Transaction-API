@@ -1,32 +1,32 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     try {
-      await queryInterface.createTable('users', {
+      await queryInterface.createTable('accounts', {
         id: {
           type: Sequelize.INTEGER,
           primaryKey: true,
           autoIncrement: true,
           allowNull: false,
         },
-        name: {
-          type: Sequelize.STRING,
-          allowNull: false,
-        },
-        email: {
+        account_id: {
           type: Sequelize.STRING,
           allowNull: false,
           unique: true,
         },
-        password: {
-          type: Sequelize.STRING.BINARY,
+        amount: {
+          type: Sequelize.INTEGER,
           allowNull: false,
-          select: false,
+          defaultValue: 0,
         },
-        cpf: {
-          type: Sequelize.BIGINT(12),
+        user_id: {
+          type: Sequelize.INTEGER,
           allowNull: false,
-          select: false,
-          unique: true,
+          references: {
+            model: 'users',
+            key: 'id',
+          },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
         },
         created_at: {
           type: Sequelize.DATE,
@@ -45,6 +45,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    await queryInterface.dropTable('users');
+    await queryInterface.dropTable('accounts');
   },
 };
