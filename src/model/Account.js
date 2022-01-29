@@ -4,7 +4,7 @@ class Account extends Model {
   static init(connection) {
     super.init({
       account_id: DataTypes.STRING,
-      amount: DataTypes.DECIMAL(10, 2),
+      amount: DataTypes.INTEGER,
     }, {
       sequelize: connection,
     });

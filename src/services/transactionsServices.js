@@ -12,7 +12,8 @@ const transactionsServices = () => {
       if (!id || !body) {
         return { status: 401, message: 'Bad Request' };
       }
-      const accountUserPayment = await Account.findByPk(id);
+      const accountUserPayment = await Account.findOne({ where: { user_id: id } });
+      if (!accountUserPayment) return { status: 404, message: 'not_found' };
       if (accountUserPayment.amount < body.amount) {
         return { status: 422, message: 'Saldo insuficiente' };
       }
@@ -20,9 +21,8 @@ const transactionsServices = () => {
       if (!userReceiver) return { status: 404, message: 'not_found' };
       const accountUserReceiver = await Account.findOne({ where: { user_id: userReceiver.id } });
 
-      if (!accountUserPayment || !accountUserReceiver) {
-        return { status: 404, message: 'not_found' };
-      }
+      if (!accountUserReceiver) return { status: 404, message: 'not_found' };
+
       if (Number(id) === userReceiver.id) return { status: 401, message: 'Não é possível transferir um valor para a própria conta!' };
       if (typeof body.amount !== 'number') {
         return { status: 401, message: 'O valor a ser recebido deve ser do tipo Number' };

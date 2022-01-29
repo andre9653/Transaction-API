@@ -11,8 +11,9 @@ module.exports = {
     return res.status(status).json({ message });
   },
   async payment(req, res) {
-    const { user_id } = req.params;
-    const { status, message } = await transactionsServices().payment(user_id, req.body);
+    const { id } = req.user;
+    console.log(id);
+    const { status, message } = await transactionsServices().payment(id, req.body);
     return res.status(status).json({ message });
   },
   async deposit(req, res) {
