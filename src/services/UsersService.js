@@ -23,14 +23,20 @@ module.exports = {
       const haveUserCpf = await User.findOne({ where: { cpf } });
 
       if (haveUserEmail || haveUserCpf) {
-        return { status: 401, message: { Error: 'Ja existe usuario com este email ou cpf' } };
+        return { status: 401, message: { Error: 'Ja existe usuário com este email ou cpf' } };
       }
       const cryptPassword = await bcrypt.hash(password, 10);
-      const userData = await User.create({
+      await User.create({
         email, password: cryptPassword, cpf, name,
       });
-      return { status: 201, message: userData };
+      return {
+        status: 201,
+        message: {
+          email, name,
+        },
+      };
     } catch (error) {
+      console.log(error.message);
       return { status: 500, message: { Error: 'Internal_error' } };
     }
   },
@@ -45,7 +51,10 @@ module.exports = {
       if (!valid) {
         return { status: 401, message: { Error: 'Email ou senha inválidos' } };
       }
-      const user = AuthServices.genToken({ name: result.name, email });
+      const user = AuthServices.genToken({ name: result.name, email, id: result.id }) || 'token';
+
+      /* O token gerado a baixo deve ser retornado pelo header da requisição para
+      acessar as demais rotas */
       return { status: 200, message: { token: user } };
     } catch (error) {
       return { status: 500, message: { Error: 'Internal_error' } };
