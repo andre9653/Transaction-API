@@ -28,5 +28,19 @@ const validDeposit = async (req, res, next) => {
     return res.status(401).json({ Error: err.message });
   }
 };
+const validTransfer = async (req, res, next) => {
+  try {
+    const validated = await ValidatorAmount.transfer.validateAsync(req.body);
+    req.body = validated;
+    return next();
+  } catch (err) {
+    return res.status(401).json({ Error: err.message });
+  }
+};
 
-module.exports = { validRegister, validLogin, validDeposit };
+module.exports = {
+  validRegister,
+  validLogin,
+  validDeposit,
+  validTransfer,
+};

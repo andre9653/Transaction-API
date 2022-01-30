@@ -13,7 +13,7 @@ routes.post('/login', valid.validLogin, UsersController.login);
 // Quando finalizado o cadastro, devera ser redirecionado para a rota de montante e inicial.
 routes.post('/register/:user_id/amount', AccountController.store);
 
-routes.post('/payment/', Auth.validToken, AccountController.payment);
+routes.post('/payment/', valid.validTransfer, Auth.validToken, AccountController.payment);
 routes.put('/deposit', valid.validDeposit, AccountController.deposit);
 
 module.exports = routes;

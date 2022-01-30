@@ -10,14 +10,6 @@ class Transactions extends Model {
       sequelize: connection,
     });
   }
-
-  // static associate(models) {
-  //   this.hasMany(
-  //     models.Account,
-  //     { foreignKey: 'account_payer_id', as: 'payer' },
-  //     { foreignKey: ' account_receiver_id', as: 'receiver' },
-  //   );
-  // }
 }
 
 module.exports = Transactions;
