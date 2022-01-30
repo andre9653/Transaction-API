@@ -1,8 +1,9 @@
 const { Model, DataTypes } = require('sequelize');
 
-class Amount extends Model {
+class Account extends Model {
   static init(connection) {
     super.init({
+      account_id: DataTypes.STRING,
       amount: DataTypes.INTEGER,
     }, {
       sequelize: connection,
@@ -14,4 +15,4 @@ class Amount extends Model {
   }
 }
 
-module.exports = Amount;
+module.exports = Account;

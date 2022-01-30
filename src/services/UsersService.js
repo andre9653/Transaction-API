@@ -1,6 +1,12 @@
 const bcrypt = require('bcrypt');
 const User = require('../model/User');
+const AuthServices = require('./AuthServices');
 
+const resultInfo = {
+  internalError: { status: 500, message: 'Internal_error' },
+  exist: { status: 401, message: 'Ja existe usuário com este email ou cpf' },
+  invalidLogin: { status: 401, message: 'Email ou senha inválidos' },
+};
 module.exports = {
   async findAll() {
     try {
@@ -9,8 +15,7 @@ module.exports = {
       });
       return { status: 200, message: users };
     } catch (error) {
-      console.log(error.message);
-      return { status: 500, message: { Error: 'Internal_error' } };
+      return resultInfo.internalError;
     }
   },
 
@@ -21,28 +26,33 @@ module.exports = {
       const haveUserEmail = await User.findOne({ where: { email } });
       const haveUserCpf = await User.findOne({ where: { cpf } });
 
-      if (haveUserEmail || haveUserCpf) {
-        return { status: 401, message: { Error: 'Ja existe usuario com este email ou cpf' } };
-      }
+      if (haveUserEmail || haveUserCpf) return resultInfo.exist;
       const cryptPassword = await bcrypt.hash(password, 10);
-      const userData = await User.create({
+      await User.create({
         email, password: cryptPassword, cpf, name,
       });
-      return { status: 201, message: userData };
+      return {
+        status: 201,
+        message: { email, name },
+      };
     } catch (error) {
-      return { status: 500, message: { Error: 'Internal_error' } };
+      return resultInfo.internalError;
     }
   },
 
   async login({ email, password }) {
-    const result = await User.findOne({ where: { email } });
-    if (!result) {
-      return { status: 401, message: { Error: 'Email ou senha inválidos' } };
+    try {
+      const result = await User.findOne({ where: { email } });
+      if (!result) return resultInfo.invalidLogin;
+      const valid = bcrypt.compareSync(password, result.password);
+      if (!valid) return resultInfo.invalidLogin;
+
+      const user = AuthServices.genToken({ name: result.name, email, id: result.id });
+      /* O token gerado a baixo deve ser retornado pelo header da requisição para
+      acessar as demais rotas */
+      return { status: 200, message: { token: user } };
+    } catch (error) {
+      return resultInfo.internalError;
     }
-    const valid = bcrypt.compareSync(password, result.password);
-    if (!valid) {
-      return { status: 401, message: { Error: 'Email ou senha inválidos' } };
-    }
-    return { status: 200, message: { name: result.name, email } };
   },
 };

@@ -15,26 +15,24 @@ module.exports = {
         email: {
           type: Sequelize.STRING,
           allowNull: false,
+          unique: true,
         },
         password: {
-          type: Sequelize.STRING.BINARY,
+          type: Sequelize.STRING,
           allowNull: false,
-          select: false,
         },
         cpf: {
-          type: Sequelize.BIGINT(12),
+          type: Sequelize.STRING,
           allowNull: false,
-          select: false,
+          unique: true,
         },
         created_at: {
           type: Sequelize.DATE,
           allowNull: false,
-          select: false,
         },
         updated_at: {
           type: Sequelize.DATE,
           allowNull: false,
-          select: false,
         },
       });
     } catch (error) {

@@ -1,7 +1,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     try {
-      await queryInterface.createTable('amounts', {
+      await queryInterface.createTable('transactions', {
         id: {
           type: Sequelize.INTEGER,
           primaryKey: true,
@@ -9,16 +9,25 @@ module.exports = {
           allowNull: false,
         },
         amount: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.DECIMAL(10, 2),
           allowNull: false,
-          defaultValue: 0,
         },
-        user_id: {
-          type: Sequelize.INTEGER,
+        account_payer_id: {
+          type: Sequelize.STRING,
           allowNull: false,
           references: {
-            model: 'users',
-            key: 'id',
+            model: 'accounts',
+            key: 'account_id',
+          },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
+        },
+        account_receiver_id: {
+          type: Sequelize.STRING,
+          allowNull: false,
+          references: {
+            model: 'accounts',
+            key: 'account_id',
           },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
@@ -40,6 +49,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    await queryInterface.dropTable('amounts');
+    await queryInterface.dropTable('transactions');
   },
 };

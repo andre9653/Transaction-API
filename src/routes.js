@@ -1,14 +1,19 @@
 const express = require('express');
-const amountController = require('./controllers/amountController');
-const usersController = require('./controllers/usersController');
+const AccountController = require('./controllers/AccountController');
+const UsersController = require('./controllers/UsersController');
+const Auth = require('./middlewares/Auth');
 const valid = require('./middlewares/validator');
 
 const routes = express.Router();
 
-routes.get('/', usersController.index);
-routes.post('/cadastro', valid.validRegister, usersController.store);
-routes.post('/login', valid.validLogin, usersController.login);
+routes.get('/', UsersController.index);
+routes.post('/register', valid.validRegister, UsersController.store);
+// Rota de login quando bem sucedido retorna um token de autenticação.
+routes.post('/login', valid.validLogin, UsersController.login);
+// Quando finalizado o cadastro, devera ser redirecionado para a rota de montante e inicial.
+routes.post('/register/:user_id/amount', AccountController.store);
 
-routes.post('/cadastro/:user_id/amount', amountController.store);
+routes.post('/payment/', valid.validTransfer, Auth.validToken, AccountController.payment);
+routes.put('/deposit', valid.validDeposit, AccountController.deposit);
 
 module.exports = routes;
