@@ -6,6 +6,7 @@ const errorMiddleware = (err, req, res, next) => {
   if (err instanceof ResourceNotFound || err instanceof ValidationError) {
     return res.status(err.statusCode).json(err);
   }
+  console.log(err);
   return res.status(INTERNAL_SERVER_ERROR).json({ statusMessage: 'Internal Server Error' });
 };
 

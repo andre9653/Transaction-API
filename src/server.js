@@ -1,4 +1,6 @@
+require('express-async-errors');
 const express = require('express');
+const errorMiddleware = require('./middlewares/errorMiddleware');
 const routes = require('./routes');
 require('dotenv').config();
 
@@ -10,5 +12,6 @@ require('./database');
 
 app.use(express.json());
 app.use(routes);
+app.use(errorMiddleware);
 
-app.listen(PORT, HOST, () => console.log('online'));
+app.listen(PORT, HOST, () => console.log(`Start server on PORT ${PORT}`));
