@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "email": "test@email.com",
+    "cpf": "10214569871",
+    "password": "9ff7b641722c30acdc058f2499d97dd8"
+  },
+  {
+    "id": 2,
+    "name": "John Travolta",
+    "email": "test2@email.com",
+    "cpf": "56871569871",
+    "password": "082b66a712e3efe31385f3158e057496"
+  }
+]

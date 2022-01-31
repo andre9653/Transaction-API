@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cross-env NODE_ENV=development mocha ./test/*"
   },
   "author": "",
   "license": "ISC",
@@ -19,10 +19,13 @@
     "joi": "^17.5.0",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
-    "sequelize": "^6.14.0"
+    "sequelize": "^6.14.0",
+    "supertest": "^6.2.2"
   },
   "devDependencies": {
+    "body-parser": "^1.19.1",
     "chai": "^4.3.6",
+    "cross-env": "^7.0.3",
     "eslint": "^8.7.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.4",

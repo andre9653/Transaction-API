@@ -3,14 +3,15 @@ const dbConfig = require('../config/database');
 const Account = require('../model/Account');
 const Transactions = require('../model/Transactions');
 const User = require('../model/User');
+require('dotenv').config();
 
-const connection = new Sequelize(dbConfig);
+const environment = process.env.NODE_ENV;
+const connection = new Sequelize(dbConfig[environment]);
 
 User.init(connection);
 Account.init(connection);
 Transactions.init(connection);
 
 Account.associate(connection.models);
-// Transactions.associate(connection.models);
 
 module.exports = connection;
