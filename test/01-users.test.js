@@ -1,79 +1,205 @@
 const chai = require('chai');
-const jwt = require('jsonwebtoken');
 const supertest = require('supertest');
-const connection = require('../src/database');
-const User = require('../src/model/User');
-const userPopulate = require('./mock/usersPopulate.json');
-const { app } = require('../src/server');
-const Account = require('../src/model/Account');
+const httpStatus = require('http-status');
+const casual = require('casual');
+const database = require('../src/database');
+const { clearDatabase } = require('./utils/index');
 
-const { expect } = chai;
+const { expect, assert } = chai;
 
-describe('1- Testes de usuários.', () => {
+describe('1- Testes de users.', () => {
   let server;
-  before(async () => {
-    await Account.sync({ force: true });
-    await User.sync({ force: true });
-  });
-  after(async (done) => {
-    done();
-  });
-  it('Testa que não é possível fazer um cadastro sem os campos necessários.', async () => {
-    // email, password, name, cpf
-    const requestTestName = await supertest(app).post('/register')
-      .send({
-        email: 'test2jose@email.com',
-        cpf: '19776546210',
-        password: '11235465469',
-      })
-      .expect(401);
-    const requestTestEmail = await supertest(app).post('/register')
-      .send({
-        name: 'teste name',
-        cpf: '19776546210',
-        password: '11235465469',
-      })
-      .expect(401);
-    const requestTestCpf = await supertest(app).post('/register')
-      .send({
-        name: 'teste name',
-        email: 'test2jose@email.com',
-        password: '11235465469',
-      })
-      .expect(401);
-    const requestTestPassword = await supertest(app).post('/register')
-      .send({
-        name: 'teste name',
-        email: 'test2jose@email.com',
-        cpf: '19776546210',
-      })
-      .expect(401);
-    expect(requestTestName.body).to.be.a('object');
-    expect(requestTestName.body.Error).to.be.equal('"name" is required');
-    expect(requestTestEmail.body).to.be.a('object');
-    expect(requestTestEmail.body.Error).to.be.equal('"email" is required');
-    expect(requestTestCpf.body).to.be.a('object');
-    expect(requestTestCpf.body.Error).to.be.equal('"cpf" is required');
-    expect(requestTestPassword.body).to.be.a('object');
-    expect(requestTestPassword.body.Error).to.be.equal('"password" is required');
-  });
-  it('Testa que não é possível criar um usuário onde o CPF ou e-mail ja cadastrados.', async () => {
 
+  before(async () => {
+    server = require('../src/server');
+    await clearDatabase(database);
+    // await Account.destroy({ where: {}, cascade: true, force: true });
+    // await User.destroy({ where: {}, cascade: true, force: true });
   });
-  it('Testa que é criado um usuário com sucesso.', async () => {
-    const { status } = await supertest(app).post('/register')
+
+  after((done) => {
+    server.shutdown(done);
+  });
+
+  it('Testa que não é possível fazer um cadastro sem os campos necessários.', async () => {
+    const withoutName = await supertest(server.app)
+      .post('/users/register')
       .send({
-        name: 'teste name',
-        email: 'test2jose@email.com',
+        email: casual.email,
         cpf: '19776546210',
-        password: '11235465469',
-      });
-    expect(status).to.be.equal(201);
+        password: casual.password,
+      })
+      .expect(httpStatus.UNPROCESSABLE_ENTITY);
+
+    assert.isNotNull(withoutName.body);
+    assert.isObject(withoutName.body);
+    assert.strictEqual(withoutName.body.name, 'ValidationError');
+    expect(withoutName.body.statusMessage).to.be.equal('"name" is required');
+
+    const withoutEmail = await supertest(server.app)
+      .post('/users/register')
+      .send({
+        name: casual.name,
+        cpf: '19776546210',
+        password: casual.password,
+      })
+      .expect(httpStatus.UNPROCESSABLE_ENTITY);
+
+    assert.isNotNull(withoutEmail.body);
+    assert.isObject(withoutEmail.body);
+    assert.strictEqual(withoutEmail.body.name, 'ValidationError');
+    expect(withoutEmail.body.statusMessage).to.be.equal('"email" is required');
+
+    const withoutCpf = await supertest(server.app)
+      .post('/users/register')
+      .send({
+        name: casual.name,
+        email: casual.email,
+        password: casual.password,
+      })
+      .expect(httpStatus.UNPROCESSABLE_ENTITY);
+
+    assert.isNotNull(withoutCpf.body);
+    assert.isObject(withoutCpf.body);
+    assert.strictEqual(withoutCpf.body.name, 'ValidationError');
+    expect(withoutCpf.body.statusMessage).to.be.equal('"cpf" is required');
+
+    const withoutPassword = await supertest(server.app)
+      .post('/users/register')
+      .send({
+        name: casual.name,
+        email: casual.email,
+        cpf: '19776546210',
+      })
+      .expect(httpStatus.UNPROCESSABLE_ENTITY);
+
+    assert.isNotNull(withoutPassword.body);
+    assert.isObject(withoutPassword.body);
+    assert.strictEqual(withoutPassword.body.name, 'ValidationError');
+    expect(withoutPassword.body.statusMessage).to.be.equal(
+      '"password" is required',
+    );
   });
-  it('Testa que não é possível fazer login sem os campos necessários.', async () => {});
-  it('Testa que não é possível fazer login com e-mail inválido.', async () => {});
-  it('Testa que não é possível fazer login com senha inválida.', async () => {});
-  it('Testa que o login foi feito com sucesso e retorna um token.', async () => {});
-  it('Testa que na resposta não tenha os campos password e cpf.', async () => {});
-  it('Testa que foi listado todos os usuários.', async () => {});
+
+  it('Testa que não é possível criar um usuário onde o CPF ou e-mail ja cadastrados.', async () => {
+    const userData = {
+      name: casual.name,
+      email: casual.email,
+      cpf: '19776546210',
+      password: casual.password,
+    };
+
+    await supertest(server.app).post('/users/register').send(userData);
+    const response = await supertest(server.app).post('/users/register').send(userData);
+
+    assert.isNotEmpty(response.body);
+    assert.strictEqual(response.body.name, 'ValidationError');
+    assert.strictEqual(response.body.statusMessage, 'Ja existe usuário com este email ou cpf');
+  });
+
+  it('Testa que é criado um usuário com sucesso.', async () => {
+    const user = {
+      name: casual.name,
+      email: casual.email,
+      cpf: Date.now().toString().substring(0, 11),
+      password: casual.password,
+    };
+
+    const response = await supertest(server.app).post('/users/register').send(user);
+
+    expect(response.status).to.be.equal(httpStatus.CREATED);
+
+    assert.isNotEmpty(response.body);
+    assert.deepOwnInclude(response.body, {
+      email: user.email.toLowerCase(),
+      name: user.name,
+    });
+  });
+  it('Testa que não é possível fazer login sem os campos necessários.', async () => {
+    const user = {
+      name: casual.name,
+      email: casual.email,
+      cpf: Date.now().toString().substring(0, 11),
+      password: casual.password,
+    };
+
+    await supertest(server.app).post('/users/register').send(user).expect(httpStatus.CREATED);
+
+    const withoutPassword = await supertest(server.app).post('/login').send({ email: user.email }).expect(httpStatus.UNPROCESSABLE_ENTITY);
+
+    assert.isNotEmpty(withoutPassword.body);
+    assert.strictEqual(withoutPassword.body.name, 'ValidationError');
+    assert.strictEqual(withoutPassword.body.statusMessage, '"password" is required');
+
+    const withoutEmail = await supertest(server.app).post('/login').send({ password: user.password }).expect(httpStatus.UNPROCESSABLE_ENTITY);
+
+    assert.isNotEmpty(withoutEmail.body);
+    assert.strictEqual(withoutEmail.body.name, 'ValidationError');
+    assert.strictEqual(withoutEmail.body.statusMessage, '"email" is required');
+  });
+
+  it('Testa que não é possível fazer login com e-mail inválido.', async () => {
+    const response = await supertest(server.app)
+      .post('/login')
+      .send({ email: 'email_is_invalid', password: 'password' })
+      .expect(httpStatus.UNPROCESSABLE_ENTITY);
+
+    assert.isNotEmpty(response.body);
+    assert.strictEqual(response.body.name, 'ValidationError');
+    assert.strictEqual(response.body.statusMessage, '"email" must be a valid email');
+  });
+
+  it('Testa que não é possível fazer login com senha inválida.', async () => {
+    const user = {
+      name: casual.name,
+      email: casual.email,
+      cpf: Date.now().toString().substring(0, 11),
+      password: casual.password,
+    };
+
+    await supertest(server.app).post('/users/register').send(user).expect(httpStatus.CREATED);
+
+    const response = await supertest(server.app).post('/login').send({ email: user.email, password: 'password_is_invalid' }).expect(httpStatus.UNPROCESSABLE_ENTITY);
+
+    assert.isNotEmpty(response.body);
+    assert.strictEqual(response.body.name, 'ValidationError');
+    assert.strictEqual(response.body.statusMessage, 'Email ou senha inválidos');
+  });
+
+  it('Testa que o login foi feito com sucesso e retorna um token.', async () => {
+    const user = {
+      name: casual.name,
+      email: casual.email,
+      cpf: Date.now().toString().substring(0, 11),
+      password: casual.password,
+    };
+
+    await supertest(server.app).post('/users/register').send(user).expect(httpStatus.CREATED);
+    const response = await supertest(server.app)
+      .post('/login')
+      .send({ email: user.email.toLowerCase(), password: user.password })
+      .expect(httpStatus.OK);
+
+    assert.isNotEmpty(response.body);
+    assert.property(response.body, 'token');
+  });
+
+  it('Testa que na resposta não tenha os campos password e cpf.', async () => {
+    const user = {
+      name: casual.name,
+      email: casual.email,
+      cpf: Date.now().toString().substring(0, 11),
+      password: casual.password,
+    };
+
+    const response = await supertest(server.app).post('/users/register').send(user).expect(httpStatus.CREATED);
+
+    assert.isNotEmpty(response.body);
+    assert.deepOwnInclude(response.body, {
+      email: user.email.toLowerCase(),
+      name: user.name,
+    });
+    expect(response.body).to.be.not.have.property('cpf');
+    expect(response.body).to.be.not.have.property('password');
+  });
 });
