@@ -14,8 +14,9 @@ const depositServices = () => {
 
     const accountUserReceiver = await Account.findOne({ where: { account_id: accountNumber } });
     if (!accountUserReceiver) throw new ValidationError(resultMessage.notFound);
-    await accountUserReceiver
-      .increment({ amount: depositValue });
+
+    await accountUserReceiver.increment({ amount: depositValue });
+
     return resultMessage.Success(depositValue);
   };
   return {
