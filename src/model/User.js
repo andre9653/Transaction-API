@@ -13,7 +13,7 @@ class User extends Model {
   }
 
   static associate(models) {
-    this.hasOne(models.Account, { foreignKey: 'user_id', as: 'owner' });
+    this.hasOne(models.Account, { foreignKey: 'user_id', as: 'account' });
   }
 }
 

@@ -12,6 +12,7 @@ User.init(connection);
 Account.init(connection);
 Transactions.init(connection);
 
+User.associate(connection.models);
 Account.associate(connection.models);
 
 module.exports = connection;
