@@ -3,11 +3,19 @@ const ResourceNotFound = require('../errors/ResourceNotFound');
 const ValidationError = require('../errors/ValidationError');
 
 const errorMiddleware = (err, req, res, next) => {
-  if (err instanceof ResourceNotFound || err instanceof ValidationError) {
+  const internalErrors = [ResourceNotFound, ValidationError];
+
+  if (internalErrors.some((internalErr) => err instanceof internalErr)) {
     return res.status(err.statusCode).json(err);
   }
-  console.log(err);
-  return res.status(INTERNAL_SERVER_ERROR).json({ statusMessage: 'Internal Server Error' });
+
+  if (process.env.NODE_ENV !== 'production') {
+    return next(err);
+  }
+
+  return res
+    .status(INTERNAL_SERVER_ERROR)
+    .json({ statusMessage: 'Internal Server Error' });
 };
 
 module.exports = errorMiddleware;

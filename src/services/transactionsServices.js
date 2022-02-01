@@ -1,4 +1,3 @@
-const connection = require('../database');
 const ValidationError = require('../errors/ValidationError');
 const Account = require('../model/Account');
 const Transactions = require('../model/Transactions');
@@ -11,7 +10,7 @@ const errorMessage = {
 };
 const success = (amount) => ({ status: 201, message: `Pagamento de R$${amount} Realizado` });
 
-const transactionsServices = () => {
+const transactionsServices = (database) => {
   const payment = async (id, body) => {
     const { amount } = body;
     const accountUserPayment = await Account.findOne({ where: { user_id: id } });
@@ -26,17 +25,21 @@ const transactionsServices = () => {
     if (!accountUserReceiver) throw new ValidationError(errorMessage.notFound);
 
     if (Number(id) === userReceiver.id) throw new ValidationError(errorMessage.ownAccount);
-    await connection.transaction(async (transaction) => {
+
+    await database.transaction(async (transaction) => {
       const payerAccount = await accountUserPayment
         .increment({ amount: -body.amount }, { transaction });
+
       const receiverAccount = await accountUserReceiver
         .increment({ amount: body.amount }, { transaction });
+
       return Transactions.create({
         amount,
         account_payer_id: payerAccount.account_id,
         account_receiver_id: receiverAccount.account_id,
       }, { transaction });
     });
+
     return success(amount);
   };
   return { payment };

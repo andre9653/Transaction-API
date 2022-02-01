@@ -22,9 +22,11 @@ const usersServices = () => {
 
     if (hasUserOnDatabase) throw new ValidationError(resultInfo.exist);
     const cryptPassword = await bcrypt.hash(password, 10);
+
     const user = await User.create({
       email, password: cryptPassword, cpf, name,
     });
+
     return { email: user.email, name: user.name };
   };
 
