@@ -1,6 +1,6 @@
 version: '3.1'
 services:
-  database:
+  database-production:
     image: mysql:5.7
     restart: always
     command: --default-authentication-plugin=mysql_native_password
@@ -12,6 +12,20 @@ services:
     container_name: database
     ports:
       - '3306:3306'
+    volumes:
+      - $HOME/
+  database-development:
+    image: mysql:5.7
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_USER: development
+      MYSQL_ROOT_PASSWORD: 'development-root'
+      MYSQL_PASSWORD: development
+      MYSQL_DATABASE: development
+    container_name: database-development
+    ports:
+      - '3308:3306'
     volumes:
       - $HOME/
   database-test:

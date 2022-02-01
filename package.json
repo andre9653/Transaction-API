@@ -4,15 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "cross-env NODE_ENV=development mocha ./test/*"
+    "start": "node src/server.js",
+    "test": "cross-env NODE_ENV=test ./node_modules/mocha/bin/mocha ./test/* --exit --timeout 60000"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "casual": "^1.6.2",
     "dotenv": "^14.3.2",
+    "eslint-plugin-mocha": "^10.0.3",
     "express": "^4.17.2",
     "express-async-errors": "^3.1.1",
     "http-status": "^1.5.0",
