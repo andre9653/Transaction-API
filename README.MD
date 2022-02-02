@@ -100,7 +100,7 @@
 
 - Collections para comunicar com a API.
 
-  - Insomina é um cliente HTTP que facilita a interação com API REST.
+  - Insomnia é um cliente HTTP que facilita a interação com API REST.
   - Caso nao tenha ele instalado, voce pode baixa-lo no seguinte link.
     https://insomnia.rest/download
   - voce pode importar o schema que está na pasta insomnina, que já tem varias collections de exemplo configuradas.
