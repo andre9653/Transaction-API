@@ -1,6 +1,6 @@
 - Esse projeto consiste em uma API REST para cadastro e gerenciamento de contas.
 
-- Para rodar o projeto é necessario ter instalado.
+- Para rodar o projeto é necessário ter instalado.
 
   - NodeJS >= 14.x
   - Docker e Docker Compose.
@@ -30,7 +30,7 @@
   - supertest
     https://github.com/visionmedia/supertest
 
-#### Arquitetura de diretorios do projeto
+#### Arquitetura de diretórios do projeto
 
 ```
 ├── src
@@ -87,13 +87,13 @@
 
 - é preciso seguir os seguintes passos para rodar a aplicação:
 
-1. Crie um arquivo na raiz do projeto chamado `.env` e depois copie as variaveis de ambiente do arquivo `.env.example` para dentro dele.
+1. Crie um arquivo na raiz do projeto chamado `.env` e depois copie as variáveis de ambiente do arquivo `.env.example` para dentro dele.
 
 2. docker-compose up -d
    Para rodar os bancos de dados de teste e de desenvolvimento.
 
-3. npm install:
-   Para instalar todas as dependencias do projeto.
+3. `npm install`
+   Para instalar todas as dependências do projeto.
 
 4. npm run dev:
    Para iniciar a aplicação.
@@ -106,4 +106,4 @@
   - voce pode importar o schema que está na pasta insomnina, que já tem varias collections de exemplo configuradas.
 
 - Para rodar os testes basta rodar o seguinte comando:
-  - npm run test
+  - `npm run test`
