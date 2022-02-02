@@ -8,6 +8,8 @@ module.exports = {
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME,
     port: parseInt(process.env.DATABASE_PORT, 10),
+    // desabilitar logging em produção
+    logging: false,
     define: {
       timestamp: true,
       underscored: true,
@@ -31,6 +33,7 @@ module.exports = {
     username: 'test',
     password: 'test',
     database: 'test',
+    logging: false,
     port: 3307,
     define: {
       timestamp: true,
