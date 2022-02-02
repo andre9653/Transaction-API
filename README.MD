@@ -101,9 +101,9 @@
 - Collections para comunicar com a API.
 
   - Insomnia é um cliente HTTP que facilita a interação com API REST.
-  - Caso nao tenha ele instalado, voce pode baixa-lo no seguinte link.
+  - Caso não tenha ele instalado, você pode baixa-lo no seguinte link.
     https://insomnia.rest/download
-  - voce pode importar o schema que está na pasta insomnina, que já tem varias collections de exemplo configuradas.
+  - Você pode importar o schema que está na pasta insomnina, que já tem varias collections de exemplo configuradas.
 
 - Para rodar os testes basta rodar o seguinte comando:
   - `npm run test`
