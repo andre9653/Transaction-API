@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const ValidationError = require('../errors/ValidationError');
 require('dotenv').config();
 
 const { SECRET } = process.env;
@@ -18,8 +19,7 @@ module.exports = {
       const { id, email, role } = decoded.payload.data;
       return { id, email, role };
     } catch (error) {
-      console.log(error.message);
-      return null;
+      throw new ValidationError(error);
     }
   },
 };

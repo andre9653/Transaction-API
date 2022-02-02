@@ -19,5 +19,6 @@ routes.post('/accounts/register/:user_id', validator(accountsValidations.amount)
 
 routes.post('/accounts/payment', validator(depositValidations.transfer), Auth.validToken, accountController.payment);
 routes.put('/accounts/deposit', validator(depositValidations.deposit), accountController.deposit);
+routes.get('/accounts/listTransactions', accountController.index);
 
 module.exports = routes;

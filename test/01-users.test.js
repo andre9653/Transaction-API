@@ -111,7 +111,7 @@ describe('1- Testes de users.', () => {
 
     assert.isNotEmpty(response.body);
     assert.deepOwnInclude(response.body, {
-      email: user.email.toLowerCase(),
+      email: user.email,
       name: user.name,
     });
   });
@@ -157,10 +157,9 @@ describe('1- Testes de users.', () => {
       password: casual.password,
     };
 
-    await supertest(server.app).post('/users/register').send(user).expect(httpStatus.CREATED);
-
-    const response = await supertest(server.app).post('/login').send({ email: user.email, password: 'password_is_invalid' }).expect(httpStatus.UNPROCESSABLE_ENTITY);
-
+    const { status } = await supertest(server.app).post('/users/register').send(user);
+    expect(status).to.be.equal(201);
+    const response = await supertest(server.app).post('/login').send({ email: user.email, password: 'password_is_invalid' });
     assert.isNotEmpty(response.body);
     assert.strictEqual(response.body.name, 'ValidationError');
     assert.strictEqual(response.body.statusMessage, 'Email ou senha inválidos');
@@ -177,7 +176,7 @@ describe('1- Testes de users.', () => {
     await supertest(server.app).post('/users/register').send(user).expect(httpStatus.CREATED);
     const response = await supertest(server.app)
       .post('/login')
-      .send({ email: user.email.toLowerCase(), password: user.password })
+      .send({ email: user.email, password: user.password })
       .expect(httpStatus.OK);
 
     assert.isNotEmpty(response.body);
@@ -196,7 +195,7 @@ describe('1- Testes de users.', () => {
 
     assert.isNotEmpty(response.body);
     assert.deepOwnInclude(response.body, {
-      email: user.email.toLowerCase(),
+      email: user.email,
       name: user.name,
     });
     expect(response.body).to.be.not.have.property('cpf');

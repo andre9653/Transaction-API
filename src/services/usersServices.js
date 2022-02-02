@@ -27,7 +27,7 @@ const usersServices = () => {
       email, password: cryptPassword, cpf, name,
     });
 
-    return { email: user.email, name: user.name };
+    return { id: user.id, email: user.email, name: user.name };
   };
 
   const login = async ({ email, password }) => {

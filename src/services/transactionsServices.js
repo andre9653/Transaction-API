@@ -12,14 +12,14 @@ const success = (amount) => ({ status: 201, message: `Pagamento de R$${amount} R
 
 const transactionsServices = (database) => {
   const payment = async (id, body) => {
-    const { amount } = body;
+    const { amount, cpf } = body;
     const accountUserPayment = await Account.findOne({ where: { user_id: id } });
     if (!accountUserPayment) throw new ValidationError(errorMessage.notFound);
     if (accountUserPayment.amount < body.amount) {
       throw new ValidationError(errorMessage.insufficientFunds);
     }
 
-    const userReceiver = await User.findOne({ where: { cpf: body.cpf } });
+    const userReceiver = await User.findOne({ where: { cpf } });
     if (!userReceiver) throw new ValidationError(errorMessage.notFound);
     const accountUserReceiver = await Account.findOne({ where: { user_id: userReceiver.id } });
     if (!accountUserReceiver) throw new ValidationError(errorMessage.notFound);
@@ -42,7 +42,14 @@ const transactionsServices = (database) => {
 
     return success(amount);
   };
-  return { payment };
+
+  const index = async () => {
+    const transactions = await Transactions.findAll({
+      attributes: ['id', 'amount'],
+    });
+    return transactions.map((value) => value.dataValues);
+  };
+  return { payment, index };
 };
 
 module.exports = {
